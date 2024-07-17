@@ -1,0 +1,119 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "playlist-sync"
+dynamic = ["version"]
+description = 'Sync playlists between music streaming services'
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Fyssion", email = "fyssioncodes@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  "ytmusicapi==1.7.5",
+  "spotipy==2.24",
+  "rich==13.7.1",
+]
+
+[project.urls]
+Documentation = "https://github.com/Fyssion/playlist-sync#readme"
+Issues = "https://github.com/Fyssion/playlist-sync/issues"
+Source = "https://github.com/Fyssion/playlist-sync"
+
+[tool.hatch.version]
+path = "playlist_sync/__about__.py"
+
+[tool.hatch.env]
+requires = [
+    "hatch-pip-compile"
+]
+
+[tool.hatch.envs.default]
+type = "pip-compile"
+pip-compile-constraint = "default"
+
+[tool.hatch.envs.default.scripts]
+start = "python -m playlist_sync"
+
+[tool.hatch.envs.test]
+dependencies = [
+    "coverage[toml]",
+    "pytest",
+    "pytest-asyncio==0.20",
+    "pytest-cov"
+]
+[tool.hatch.envs.test.scripts]
+test = "pytest"
+lint = "pyright"
+cov = "pytest --cov=playlist_sync"
+
+[tool.hatch.envs.style]
+detached = true
+dependencies = [
+  "black",
+  "isort",
+]
+[tool.hatch.envs.style.scripts]
+check = [
+  "black --check --diff .",
+  "isort --check-only --diff .",
+]
+fmt = [
+  "isort .",
+  "black .",
+  "check",
+]
+
+[tool.coverage.run]
+source_pkgs = ["playlist_sync", "tests"]
+branch = true
+parallel = true
+omit = [
+  "playlist_sync/__about__.py",
+]
+
+[tool.coverage.paths]
+playlist_sync = ["playlist_sync", "*/playlist-sync/playlist_sync"]
+tests = ["tests", "*/playlist-sync/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.black]
+line-length = 100
+skip-string-normalization = true
+
+[tool.isort]
+profile = "black"
+combine_as_imports = true
+combine_star = true
+line_length = 100
+
+[tool.pyright]
+pythonPlatform = "Linux"
+venvPath = ".hatch/test"
+pythonVersion = "3.11"
+typeCheckingMode = "basic"
+useLibraryCodeForTypes = true
+reportUnnecessaryTypeIgnoreComment = "warning"
+reportUnusedImport = "error"
+

@@ -1,0 +1,46 @@
+name: "lint"
+
+on:
+  push:
+  pull_request:
+    types: [ opened, reopened, synchronize ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332  # v4.1.7
+
+      - name: Set up Python
+        uses: actions/setup-python@39cd14951b08e74b54015e9e001cdefcf80e669f  # v5.1.1
+        with:
+          python-version: "3.11"
+
+      - name: Install hatch
+        run: |
+          pip install hatch
+          hatch config set dirs.env.virtual .hatch
+
+      - name: Install dependencies
+        run: |
+          hatch env create test
+
+      - name: Create placeholder config
+        run: |
+          echo "spotify_client_id = ''" >> config.py
+          echo "spotify_client_secret = ''" >> config.py
+          echo "sync_from_url = ''" >> config.py
+          echo "sync_to_id = ''" >> config.py
+
+      - name: Set up Node
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b  # v4.0.3
+        with:
+          node-version: 16
+
+      # the pyright action doesn't like hatch's venv, and I'm too lazy to figure out why
+      - name: Install pyright
+        run: npm i -g pyright@1.1.372
+
+      - name: Test with pyright
+        run: hatch run test:lint
