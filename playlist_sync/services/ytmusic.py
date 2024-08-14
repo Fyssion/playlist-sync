@@ -5,23 +5,20 @@
 from __future__ import annotations
 
 import logging
-
-import ytmusicapi
-from ytmusicapi import YTMusic as YTMusicAPI
+from typing import TYPE_CHECKING
 
 from playlist_sync.services.base import BaseService
 from playlist_sync.track import Track
+
+if TYPE_CHECKING:
+    import ytmusicapi
 
 log = logging.getLogger('playlist_sync.services.ytmusic')
 
 
 class YTMusic(BaseService):
-    def __init__(self, *args, **kwargs):
-        self.api = YTMusicAPI(*args, **kwargs)
-
-    @staticmethod
-    def setup():
-        ytmusicapi.setup(filepath='browser.json')
+    def __init__(self, api: ytmusicapi.YTMusic):
+        self.api = api
 
     def fetch_playlist(self, url: str) -> list[Track]:
         log.info(f'Fetching playlist {url}')

@@ -5,24 +5,20 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
-
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
+from typing import TYPE_CHECKING, Any
 
 from playlist_sync.services.base import BaseService
 from playlist_sync.track import Track
+
+if TYPE_CHECKING:
+    import spotipy
 
 log = logging.getLogger('playlist_sync.services.spotify')
 
 
 class Spotify(BaseService):
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('scope', 'playlist-read-private,playlist-read-collaborative')
-        kwargs.setdefault('redirect_uri', 'http://localhost:5000/')
-        kwargs.setdefault('open_browser', False)
-        auth_manager = SpotifyOAuth(*args, **kwargs)
-        self.api = spotipy.Spotify(auth_manager=auth_manager)
+    def __init__(self, api: spotipy.Spotify):
+        self.api = api
 
     FETCH_PLAYLIST_KWARGS: dict[str, Any] = dict(
         fields='total,limit,items(track(name))',
