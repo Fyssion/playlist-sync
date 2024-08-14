@@ -44,6 +44,11 @@ class YTMusic(BaseService):
         result = self.api.get_playlist(url, limit=None)
         total = result['trackCount']
         log.info(f'Removing all {total} tracks from playlist')
+
+        if not result['tracks']:
+            log.info('No songs to clear in playlist')
+            return
+
         result = self.api.remove_playlist_items(url, result['tracks'])
         status = result if isinstance(result, str) else result['status']
 
