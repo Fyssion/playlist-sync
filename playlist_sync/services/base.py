@@ -27,5 +27,8 @@ class BaseService(Protocol):
     def add_to_playlist(self, url: str, tracks: list[Track]):
         raise NotImplementedError
 
+    def _extract_track_metadata(self, track: Track) -> Any | None:
+        return track._service_metadata.get(str(self))
+
     def __str__(self) -> str:
         return self.__class__.__name__

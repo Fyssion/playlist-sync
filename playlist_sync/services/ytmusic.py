@@ -34,7 +34,9 @@ class YTMusic(BaseService):
         tracks = []
 
         for yt_track in yt_tracks:
-            track = Track(title=yt_track['title'], artist='')  # TODO: artist
+            track = Track(
+                title=yt_track['title'], artist='', service=str(self), metadata=yt_track
+            )  # TODO: artist
             tracks.append(track)
 
         return tracks

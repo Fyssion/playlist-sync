@@ -63,7 +63,9 @@ class Spotify(BaseService):
 
         for item in items:
             sp_track = item['track']
-            track = Track(title=sp_track['name'], artist='')  # TODO: artist
+            track = Track(
+                title=sp_track['name'], artist='', service=str(self), metadata=item['track']
+            )  # TODO: artist
             tracks.append(track)
 
         return tracks

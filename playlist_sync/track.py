@@ -11,19 +11,29 @@ from typing import Any
 class Track:
     title: str
     artist: str
+    _service_metadata: dict[str, Any]
 
-    def __init__(self, title: str, artist: str):
+    def __init__(
+        self, title: str, artist: str, *, service: str | None = None, metadata: Any = None
+    ):
         self.title = title
         self.artist = artist
+        self._service_metadata = {}
 
-        def __eq__(self, other: Any) -> bool:
-            if not isinstance(other, Track):
-                return False
+        if service is not None:
+            self._service_metadata[service] = metadata
 
-            if self.title != other.title or self.artist != other.artist:
-                return False
+    def add_metadata(self, service: str, metadata: Any):
+        self._service_metadata[service] = metadata
 
-            return True
+    def __eq__(self, other: Any) -> bool:
+        if not isinstance(other, Track):
+            return False
+
+        if self.title != other.title or self.artist != other.artist:
+            return False
+
+        return True
 
     def __repr__(self) -> str:
         return f'Track(title={self.title!r}, artist={self.artist!r})'
