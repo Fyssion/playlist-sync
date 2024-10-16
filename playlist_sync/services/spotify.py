@@ -21,7 +21,7 @@ class Spotify(BaseService):
         self.api = api
 
     FETCH_PLAYLIST_KWARGS: dict[str, Any] = dict(
-        fields='total,limit,items(track(name))',
+        fields='total,limit,items(track(name,artists))',
         additional_types=('track',),
     )
 
@@ -59,9 +59,10 @@ class Spotify(BaseService):
 
         for item in items:
             sp_track = item['track']
+            artists = ', '.join(a['name'] for a in sp_track['artists'])
             track = Track(
-                title=sp_track['name'], artist='', service=str(self), metadata=item['track']
-            )  # TODO: artist
+                title=sp_track['name'], artist=artists, service=str(self), metadata=item['track']
+            )
             tracks.append(track)
 
         return tracks
