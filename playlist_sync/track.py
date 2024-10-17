@@ -41,6 +41,5 @@ class Track:
     def __str__(self) -> str:
         return f'{self.title} by {self.artist}' if self.artist else self.title
 
-
     def __hash__(self) -> int:
         return hash((self.title, self.artist))

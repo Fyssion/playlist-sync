@@ -8,7 +8,12 @@ import argparse
 
 from playlist_sync.playlist import Playlist
 
-from .utils import add_spotify_auth_to_parser , initialize_spotify, initialize_ytmusic, resolve_spotify_auth_from_args
+from .utils import (
+    add_spotify_auth_to_parser,
+    initialize_spotify,
+    initialize_ytmusic,
+    resolve_spotify_auth_from_args,
+)
 
 
 def main(args: argparse.Namespace):
@@ -28,6 +33,12 @@ def initialize(parsers: argparse._SubParsersAction):
     )
 
     parser.set_defaults(callback=main)
-    parser.add_argument('-f', '--from', required=True, help='yt playlist id of the playlist to sync from', dest='_from')
+    parser.add_argument(
+        '-f',
+        '--from',
+        required=True,
+        help='yt playlist id of the playlist to sync from',
+        dest='_from',
+    )
     parser.add_argument('-t', '--to', required=True, help='spotify url of the playlist to sync to')
     add_spotify_auth_to_parser(parser)

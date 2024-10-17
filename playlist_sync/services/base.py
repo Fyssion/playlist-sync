@@ -35,6 +35,5 @@ class BaseService(Protocol):
         seen_add = seen.add
         return [x for x in tracks if not (x in seen or seen_add(x))]
 
-
     def __str__(self) -> str:
         return self.__class__.__name__

@@ -17,7 +17,6 @@ from spotipy.oauth2 import SpotifyOAuth
 from playlist_sync.services.spotify import Spotify
 from playlist_sync.services.ytmusic import YTMusic
 
-
 log = logging.getLogger('playlist_sync')
 
 
@@ -51,8 +50,10 @@ def resolve_spotify_auth_from_args(args: argparse.Namespace):
         try:
             config = importlib.import_module('config')
         except ImportError:
-            log.error('''Could not find Spotify client ID and secret.
-                      Either provide them as arguments in the CLI or in a config.py file''')
+            log.error(
+                '''Could not find Spotify client ID and secret.
+                      Either provide them as arguments in the CLI or in a config.py file'''
+            )
             sys.exit(1)
 
         args.client_id = config.spotify_client_id

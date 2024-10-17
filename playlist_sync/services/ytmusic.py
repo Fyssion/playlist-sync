@@ -57,7 +57,9 @@ class YTMusic(BaseService):
 
     def search_track_id(self, track: Track) -> str:
         log.info(f'Searching for id for {track}')
-        results = self.api.search(query=f'{track.title} by {track.artist}', limit=1, filter='songs', ignore_spelling=True)
+        results = self.api.search(
+            query=f'{track.title} by {track.artist}', limit=1, filter='songs', ignore_spelling=True
+        )
         video_id = results[0]['videoId']
         log.info(f'Found id for {track}: {video_id}')
         return video_id

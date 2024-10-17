@@ -3,14 +3,13 @@
 # SPDX-License-Identifier: MIT
 
 from __future__ import annotations
+
 import argparse
 import logging
 
 from rich.logging import RichHandler
 
-from . import spotify_to_yt
-from . import yt_to_spotify
-
+from . import spotify_to_yt, yt_to_spotify
 
 log = logging.getLogger('playlist_sync')
 
@@ -21,7 +20,9 @@ logging.getLogger().addHandler(sh)
 
 
 def main():
-    parser = argparse.ArgumentParser(prog='playlist_sync', description='Sync playlists between streaming services')
+    parser = argparse.ArgumentParser(
+        prog='playlist_sync', description='Sync playlists between streaming services'
+    )
     parser.set_defaults(callback=None)
     parsers = parser.add_subparsers(title='subcommands')
 
