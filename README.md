@@ -22,25 +22,34 @@ python3 -m pip install git+https://github.com/Fyssion/playlist-sync.git
 
 ## Usage
 
-You'll need to create a `config.py` file. Here's an example of that:
+You'll need to get your Spotify API credentials.
+Visit the [Spotify developer dashboard][spotify-dashboard] to get them.
 
-```py
-# Visit https://developer.spotify.com/dashboard to get your credentials
-spotify_client_id = 'spotify client id'
-spotify_client_secret = 'spotify client secret'
-
-sync_from_url = 'url or id of spotify playlist to sync tracks from'
-sync_to_id = 'id of youtube music playlist to sync tracks to (found in playlist URL)'
-```
-
-Then to run the program:
+To sync from Spotify to YT Music, use the following command:
 
 ```sh
 # Windows
-py -m playlist_sync
+py -m playlist_sync spotify-to-yt -f "<SPOTIFY_URL>" -t "<YT_ID>"
 
 # MacOS/Linux
-python3 -m playlist_sync
+python3 -m playlist_sync spotify-to-yt -f "<SPOTIFY_URL>" -t "<YT_ID>"
+```
+
+Replace `<SPOTIFY_URL>` and `<YT_ID>` with the Spotify playlist URL
+and YouTube playlist ID respectively.
+
+To get the YouTube playlist ID, click the share button on the playlist
+page in YouTube Music, and copy the ID after `list=`, as shown below:
+
+```re
+https://music.youtube.com/playlist?list=[THIS_PART_OF_THE_URL]&si=NOT_THIS
+```
+
+If you want to sync from YT Music to Spotify, modify the command above to look
+like this:
+
+```sh
+(py -m | python3 -m) playlist_sync yt-to-spotify -f "<YT_ID>" -t "<SPOTIFY_URL>"
 ```
 
 On the first run, it'll ask you to paste your browser credentials for
@@ -54,4 +63,15 @@ terminal.
 After that, it'll start syncing. If you run into any issues, feel free to
 open a discussion post and I can try to help.
 
+### Config file
+
+If you don't want to type your Spotify credentials into the CLI on every run,
+you can create a `config.py` file. Here's an example of that:
+
+```py
+spotify_client_id = 'spotify client id'
+spotify_client_secret = 'spotify client secret'
+```
+
 [ytmusicapi-browser]: https://ytmusicapi.readthedocs.io/en/stable/setup/browser.html#copy-authentication-headers
+[spotify-dashboard]: https://developer.spotify.com/dashboard
