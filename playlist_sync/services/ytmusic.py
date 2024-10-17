@@ -31,8 +31,9 @@ class YTMusic(BaseService):
         tracks = []
 
         for yt_track in yt_tracks:
+            artists = ', '.join(a['name'] for a in yt_track['artists'])
             track = Track(
-                title=yt_track['title'], artist='', service=str(self), metadata=yt_track
+                title=yt_track['title'], artist=artists, service=str(self), metadata=yt_track
             )  # TODO: artist
             tracks.append(track)
 
@@ -72,17 +73,16 @@ class YTMusic(BaseService):
         # self.api.remove_playlist_items(url, track_ids)
         pass
 
-    def _remove_duplicates(self, tracks: list[str]) -> list[str]:
-        seen = set()
-        seen_add = seen.add
-        return [x for x in tracks if not (x in seen or seen_add(x))]
-
     def add_to_playlist(self, url: str, tracks: list[Track]):
-        log.info('Searching for corresponding track IDs')
+        log.info('Resolving corresponding track IDs')
         track_ids = []
 
         for track in tracks:
-            track_ids.append(self.search_track_id(track))
+            if str(self) in track._service_metadata:
+                # we already have the track ID for this one
+                track_ids.append(track._service_metadata[str(self)]['videoId'])
+            else:
+                track_ids.append(self.search_track_id(track))
 
         # remove duplicates
         track_ids = self._remove_duplicates(track_ids)

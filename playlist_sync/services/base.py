@@ -30,5 +30,11 @@ class BaseService(Protocol):
     def _extract_track_metadata(self, track: Track) -> Any | None:
         return track._service_metadata.get(str(self))
 
+    def _remove_duplicates(self, tracks: list[str]) -> list[str]:
+        seen = set()
+        seen_add = seen.add
+        return [x for x in tracks if not (x in seen or seen_add(x))]
+
+
     def __str__(self) -> str:
         return self.__class__.__name__

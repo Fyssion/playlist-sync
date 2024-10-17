@@ -2,7 +2,7 @@
 
 Just a shitty and possibly over engineered Python script for syncing
 playlists between music streaming services. Right now it only supports
-syncing from Spotify to YTMusic because that's all I need.
+syncing between Spotify and YTMusic because that's all I need.
 
 This is only on GitHub because I spent multiple hours on this for no
 reason. If it's actually helpful (or could be) and you want me to finish
