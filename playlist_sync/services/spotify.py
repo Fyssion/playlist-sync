@@ -26,7 +26,7 @@ class Spotify(BaseService):
         additional_types=('track',),
     )
 
-    def fetch_playlist(self, url: str) -> list[Track]:
+    def fetch_playlist(self, url: str, *, cache_metadata: bool = True) -> list[Track]:
         log.info(f'Fetching playlist {url}')
         result = self.api.playlist_items(url, **Spotify.FETCH_PLAYLIST_KWARGS)
 
@@ -62,7 +62,10 @@ class Spotify(BaseService):
             sp_track = item['track']
             artists = ', '.join(a['name'] for a in sp_track['artists'])
             track = Track(
-                title=sp_track['name'], artist=artists, service=str(self), metadata=sp_track
+                title=sp_track['name'],
+                artist=artists,
+                service=str(self),
+                metadata=sp_track if cache_metadata else None,
             )
             tracks.append(track)
 
@@ -82,10 +85,9 @@ class Spotify(BaseService):
         if result is None:
             log.info(f'Failed to remove')
 
-    def search_track_id(self, track: Track) -> str:
+    def search_track_id(self, track: Track, *, cache_metadata: bool = True) -> str:
         log.info(f'Searching for id for {track}')
         query = f'track:{shlex.quote(track.title)} artist:{shlex.quote(track.artist)}'
-        print(query)
         result = self.api.search(query, limit=1, type='track')
 
         if not result or result['tracks']['total'] == 0:
@@ -96,23 +98,40 @@ class Spotify(BaseService):
                 log.info('Failed to find a corresponding song')
                 raise RuntimeError('TODO')
 
+        # cache track metadata
+        if cache_metadata and str(self) not in track._service_metadata:
+            track._service_metadata[str(self)] = result['tracks']['items'][0]
+
         track_id = result['tracks']['items'][0]['id']
         log.info(f'Found id for {track}: {track_id}')
         return track_id
 
+    def resolve_track_id(self, track: Track, *, cache_metadata: bool = True) -> str:
+        if str(self) in track._service_metadata:
+            # we already have the track ID for this one
+            return track._service_metadata[str(self)]['id']
+        else:
+            return self.search_track_id(track, cache_metadata=cache_metadata)
+
     def remove_from_playlist(self, url: str, tracks: list[Track]):
-        raise NotImplementedError
+        log.info('Resolving corresponding track IDs')
+        track_ids = []
+
+        for track in tracks:
+            track_ids.append(self.resolve_track_id(track))
+
+        log.info('Removing tracks from playlist')
+        result = self.api.playlist_remove_all_occurrences_of_items(url, track_ids)
+
+        if result is None:
+            log.info(f'Failed to remove')
 
     def add_to_playlist(self, url: str, tracks: list[Track]):
         log.info('Resolving corresponding track IDs')
         track_ids = []
 
         for track in tracks:
-            if str(self) in track._service_metadata:
-                # we already have the track ID for this one
-                track_ids.append(track._service_metadata[str(self)]['id'])
-            else:
-                track_ids.append(self.search_track_id(track))
+            track_ids.append(self.resolve_track_id(track))
 
         # remove duplicates
         track_ids = self._remove_duplicates(track_ids)

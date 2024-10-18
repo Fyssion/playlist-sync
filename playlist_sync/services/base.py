@@ -12,13 +12,16 @@ if TYPE_CHECKING:
 
 @runtime_checkable
 class BaseService(Protocol):
-    def fetch_playlist(self, url: str) -> list[Track]:
+    def fetch_playlist(self, url: str, *, cache_metadata: bool = True) -> list[Track]:
         raise NotImplementedError
 
     def clear_playlist(self, url: str):
         raise NotImplementedError
 
-    def search_track_id(self, track: Track) -> str:
+    def search_track_id(self, track: Track, *, cache_metadata: bool = True) -> str:
+        raise NotImplementedError
+
+    def resolve_track_id(self, track: Track, *, cache_metadata: bool = True) -> str:
         raise NotImplementedError
 
     def remove_from_playlist(self, url: str, tracks: list[Track]):
