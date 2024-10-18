@@ -29,10 +29,6 @@ class Playlist:
     def sync_to(self, service: BaseService, url: str):
         log.info(f'Syncing playlist to {url} on {service}')
 
-        # TODO: remove after finishing actual syncing logic below
-        # log.info(f'Clearing playlist {url} on {service}')
-        # service.clear_playlist(url)
-
         tracks = service.fetch_playlist(url)
         diff = set(self.tracks) ^ set(tracks)
 

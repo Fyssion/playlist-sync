@@ -34,7 +34,7 @@ class YTMusic(BaseService):
             artists = ', '.join(a['name'] for a in yt_track['artists'])
             track = Track(
                 title=yt_track['title'], artist=artists, service=str(self), metadata=yt_track if cache_metadata else None
-            )  # TODO: artist
+            )
             tracks.append(track)
 
         return tracks
