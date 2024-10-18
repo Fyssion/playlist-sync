@@ -58,7 +58,7 @@ class YTMusic(BaseService):
         if status != 'STATUS_SUCCEEDED':
             log.info(f'Failed to remove, status of removal: {result}')
 
-    def search_track(self, track: Track, *, cache_metadata: bool = True) -> str:
+    def search_track_id(self, track: Track, *, cache_metadata: bool = True) -> str:
         log.info(f'Searching for id for {track}')
         results = self.api.search(
             query=f'{track.title} by {track.artist}', limit=1, filter='songs', ignore_spelling=True
@@ -72,7 +72,7 @@ class YTMusic(BaseService):
         log.info(f'Found id for {track}: {video_id}')
         return video_id
 
-    def ensure_track_metadata(self, track: Track, *, cache_metadata: bool = True) -> str:
+    def resolve_track_id(self, track: Track, *, cache_metadata: bool = True) -> str:
         if str(self) in track._service_metadata:
             # we already have the track ID for this one
             return track._service_metadata[str(self)]['videoId']
