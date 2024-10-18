@@ -33,7 +33,10 @@ class YTMusic(BaseService):
         for yt_track in yt_tracks:
             artists = ', '.join(a['name'] for a in yt_track['artists'])
             track = Track(
-                title=yt_track['title'], artist=artists, service=str(self), metadata=yt_track if cache_metadata else None
+                title=yt_track['title'],
+                artist=artists,
+                service=str(self),
+                metadata=yt_track if cache_metadata else None,
             )
             tracks.append(track)
 
@@ -76,7 +79,6 @@ class YTMusic(BaseService):
         else:
             return self.search_track_id(track, cache_metadata=cache_metadata)
 
-
     def remove_from_playlist(self, url: str, tracks: list[Track]):
         log.info('Resolving corresponding track IDs')
         track_metadata = []
@@ -91,7 +93,6 @@ class YTMusic(BaseService):
 
         if status != 'STATUS_SUCCEEDED':
             log.info(f'Failed to remove, status of removal: {result}')
-
 
     def add_to_playlist(self, url: str, tracks: list[Track]):
         log.info('Resolving corresponding track IDs')
