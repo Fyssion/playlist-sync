@@ -30,8 +30,8 @@ class Playlist:
         log.info(f'Syncing playlist to {url} on {service}')
 
         # TODO: remove after finishing actual syncing logic below
-        log.info(f'Clearing playlist {url} on {service}')
-        service.clear_playlist(url)
+        # log.info(f'Clearing playlist {url} on {service}')
+        # service.clear_playlist(url)
 
         tracks = service.fetch_playlist(url)
         diff = set(self.tracks) ^ set(tracks)
@@ -46,6 +46,10 @@ class Playlist:
             else:
                 # track is in the original but not synced, must be added
                 to_add.append(track)
+
+        if not to_add and not to_remove:
+            log.info('Playlists are already synced')
+            return
 
         if to_add:
             log.info(f'Found {len(to_add)} tracks to add: {to_add}')
